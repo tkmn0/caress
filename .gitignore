@@ -29,3 +29,5 @@
 *.raw
 *.wav
 *.ogg
+
+/libs/
