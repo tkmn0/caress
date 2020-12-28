@@ -22,7 +22,7 @@ var (
 	errorNoDataSupplied                = errors.New("no data supplied error")
 	errorNoTargetbuffer                = errors.New("no target buffer error")
 	errorSuppliedDataSize              = errors.New("input buffer length must be multiple of channels")
-	errorEncode                        = errors.New("no data encoded")
+	errorEncode                        = errors.New("error to encode")
 	errorDecode                        = errors.New("no data decoded")
 	errorSetBitrate                    = errors.New("set bitrate error")
 	errorGetBitrate                    = errors.New("get bitrate error")
