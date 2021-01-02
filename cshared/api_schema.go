@@ -28,9 +28,9 @@ type PointerResult struct {
 	ApiError ApiError
 }
 
-type DataResult struct {
-	ResultData Data
-	ApiError   ApiError
+type EncodeDecodeResult struct {
+	Length   int32
+	ApiError ApiError
 }
 
 type NoiseReducerConfig struct {

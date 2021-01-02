@@ -49,82 +49,131 @@ func CreateDecoder(config unsafe.Pointer, result unsafe.Pointer) {
 	}
 }
 
+//export ReduceNoise
+func ReduceNoise(
+	ptr unsafe.Pointer,
+	pcm unsafe.Pointer,
+	pcmLen int32,
+	channel int32) {
+	rn := (*caress.NoiseReducer)(ptr)
+	var p []int16
+	pointerToSlice(pcm, pcmLen, unsafe.Pointer(&p))
+	rn.ProcessFrame(p, int(channel))
+}
+
+//export ReduceNoise
+func ReduceNoiseFloat(
+	ptr unsafe.Pointer,
+	pcm unsafe.Pointer,
+	pcmLen int32,
+	channel int32) {
+	rn := (*caress.NoiseReducer)(ptr)
+	var p []float32
+	pointerToSlice(pcm, pcmLen, unsafe.Pointer(&p))
+	rn.ProcessFrameFloat(p, int(channel))
+}
+
 //export Encode
-func Encode(ep unsafe.Pointer, input unsafe.Pointer, result unsafe.Pointer) {
-	i := (*Data)(input)
-	r := (*DataResult)(result)
-	e := (*caress.Encoder)(ep)
-	var pcm []int16
-	var buffer []byte
-	dataToSlice(*i, unsafe.Pointer(&pcm))
-	dataToSlice(r.ResultData, unsafe.Pointer(&buffer))
-	l, err := e.Encode(pcm, buffer)
+func Encode(
+	ptr unsafe.Pointer,
+	pcm unsafe.Pointer,
+	pcmLen int32,
+	buffer unsafe.Pointer,
+	bufferLen int32,
+	result unsafe.Pointer) {
+	r := (*EncodeDecodeResult)(result)
+	e := (*caress.Encoder)(ptr)
+	var p []int16
+	var b []byte
+	pointerToSlice(pcm, pcmLen, unsafe.Pointer(&p))
+	pointerToSlice(buffer, bufferLen, unsafe.Pointer(&b))
+	l, err := e.Encode(p, b)
+	r.Length = int32(l)
 	r.ApiError = *CreateApiError(err)
-	r.ResultData.Length = uint32(l)
 }
 
 //export EncodeFloat
-func EncodeFloat(ep unsafe.Pointer, input unsafe.Pointer, result unsafe.Pointer) {
-	i := (*Data)(input)
-	r := (*DataResult)(result)
-	e := (*caress.Encoder)(ep)
-	var pcm []float32
-	var buffer []byte
-	dataToSlice(*i, unsafe.Pointer(&pcm))
-	dataToSlice(r.ResultData, unsafe.Pointer(&buffer))
-	l, err := e.EncodeFloat(pcm, buffer)
+func EncodeFloat(
+	ptr unsafe.Pointer,
+	pcm unsafe.Pointer,
+	pcmLen int32,
+	buffer unsafe.Pointer,
+	bufferLen int32,
+	result unsafe.Pointer) {
+	r := (*EncodeDecodeResult)(result)
+	e := (*caress.Encoder)(ptr)
+	var p []float32
+	var b []byte
+	pointerToSlice(pcm, pcmLen, unsafe.Pointer(&p))
+	pointerToSlice(buffer, bufferLen, unsafe.Pointer(&b))
+	l, err := e.EncodeFloat(p, b)
+	r.Length = int32(l)
 	r.ApiError = *CreateApiError(err)
-	r.ResultData.Length = uint32(l)
 }
 
 //export Decode
-func Decode(dp unsafe.Pointer, fec bool, input unsafe.Pointer, result unsafe.Pointer) {
-	i := (*Data)(input)
-	r := (*DataResult)(result)
-	d := (*caress.Decoder)(dp)
-	var buffer []byte
-	var pcm []int16
-	dataToSlice(*i, unsafe.Pointer(&buffer))
-	dataToSlice(r.ResultData, unsafe.Pointer(&pcm))
-	l, err := d.Decode(buffer, pcm, fec)
+func Decode(
+	ptr unsafe.Pointer,
+	fec bool,
+	buffer unsafe.Pointer,
+	bufferLen int32,
+	pcm unsafe.Pointer,
+	pcmLen int32,
+	result unsafe.Pointer) {
+	r := (*EncodeDecodeResult)(result)
+	d := (*caress.Decoder)(ptr)
+	var b []byte
+	var p []int16
+	pointerToSlice(buffer, bufferLen, unsafe.Pointer(&b))
+	pointerToSlice(pcm, pcmLen, unsafe.Pointer(&p))
+	l, err := d.Decode(b, p, fec)
+	r.Length = int32(l)
 	r.ApiError = *CreateApiError(err)
-	r.ResultData.Length = uint32(l)
 }
 
 //export DecodeFloat
-func DecodeFloat(dp unsafe.Pointer, fec bool, input unsafe.Pointer, result unsafe.Pointer) {
-	i := (*Data)(input)
-	r := (*DataResult)(result)
-	d := (*caress.Decoder)(dp)
-	var buffer []byte
-	var pcm []float32
-	dataToSlice(*i, unsafe.Pointer(&buffer))
-	dataToSlice(r.ResultData, unsafe.Pointer(&pcm))
-	l, err := d.DecodeFloat(buffer, pcm, fec)
+func DecodeFloat(
+	ptr unsafe.Pointer,
+	fec bool,
+	buffer unsafe.Pointer,
+	bufferLen int32,
+	pcm unsafe.Pointer,
+	pcmLen int32,
+	result unsafe.Pointer) {
+	r := (*EncodeDecodeResult)(result)
+	d := (*caress.Decoder)(ptr)
+	var b []byte
+	var p []float32
+	pointerToSlice(buffer, bufferLen, unsafe.Pointer(&b))
+	pointerToSlice(pcm, pcmLen, unsafe.Pointer(&p))
+	l, err := d.DecodeFloat(b, p, fec)
+	r.Length = int32(l)
 	r.ApiError = *CreateApiError(err)
-	r.ResultData.Length = uint32(l)
-}
-
-func dataToSlice(source Data, dist unsafe.Pointer) {
-	slice := (*reflect.SliceHeader)(dist)
-	slice.Len = int(source.Length)
-	slice.Cap = int(source.Length)
-	slice.Data = uintptr(source.Ptr)
 }
 
 //export DestroyNoiseReducer
-func DestroyNoiseReducer(rp unsafe.Pointer) {
-	delete(noiseReducers, rp)
+func DestroyNoiseReducer(ptr unsafe.Pointer) {
+	delete(noiseReducers, ptr)
+	ptr = nil
 }
 
 //export DestroyEncoder
-func DestroyEncoder(ep unsafe.Pointer) {
-	delete(encoders, ep)
+func DestroyEncoder(ptr unsafe.Pointer) {
+	delete(encoders, ptr)
+	ptr = nil
 }
 
 //export DestroyDecoder
-func DestroyDecoder(dp unsafe.Pointer) {
-	delete(decoders, dp)
+func DestroyDecoder(ptr unsafe.Pointer) {
+	delete(decoders, ptr)
+	ptr = nil
+}
+
+func pointerToSlice(source unsafe.Pointer, length int32, dist unsafe.Pointer) {
+	slice := (*reflect.SliceHeader)(dist)
+	slice.Len = int(length)
+	slice.Cap = int(length)
+	slice.Data = uintptr(source)
 }
 
 func init() {

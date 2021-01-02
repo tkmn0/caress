@@ -73,7 +73,7 @@ func FromErrorToErrorCode(e error) CaressErrorCode {
 	case caress.ErrorSetPacketLossPercInvalidValue:
 		return errorSetPacketLossPercInvalidValue
 	case caress.ErrorGetPacketLossPerc:
-		return errorGetPacketLossPerce
+		return errorGetPacketLossPerc
 	default:
 		return errorUnDefined
 	}
