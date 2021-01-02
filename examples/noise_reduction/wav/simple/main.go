@@ -41,7 +41,7 @@ func main() {
 	var sampleRate uint32 = format.SampleRate
 	var bitsPerSample uint16 = format.BitsPerSample
 
-	rnn := caress.NewNoiseReducer(int(numChannels), sampleRate, 20, caress.Voice)
+	rnn := caress.NewNoiseReducer(int(numChannels), sampleRate, 20, caress.RnnoiseModelVoice)
 	defer rnn.Destroy()
 
 	samples := make([]wav.Sample, 1024)

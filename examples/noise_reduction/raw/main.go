@@ -21,7 +21,7 @@ func main() {
 	outFile, _ := os.Create("./processed.raw")
 	defer outFile.Close()
 
-	rnn := caress.NewNoiseReducer(1, 48000, 30, caress.Voice)
+	rnn := caress.NewNoiseReducer(1, 48000, 30, caress.RnnoiseModelVoice)
 	defer rnn.Destroy()
 
 	buffer := make([]byte, 480*2)
