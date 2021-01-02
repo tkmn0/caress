@@ -20,62 +20,62 @@ func TestEncoderInit(t *testing.T) {
 func TestEncoderUnitialized(t *testing.T) {
 	var enc Encoder
 	_, err := enc.Encode(nil, nil)
-	if err != errorUniInitialized {
+	if err != errorUnInitialized {
 		t.Errorf("Encode Expected \"uninitialized error\" error: %v", err)
 	}
 
 	_, err = enc.EncodeFloat(nil, nil)
-	if err != errorUniInitialized {
+	if err != errorUnInitialized {
 		t.Errorf("EncodeFloat Expected \"uninitialized error\" error: %v", err)
 	}
 
 	err = enc.Setbitrate(600)
-	if err != errorUniInitialized {
+	if err != errorUnInitialized {
 		t.Errorf("SetBitrate Expected \"uninitialized error\" error: %v", err)
 	}
 
 	_, err = enc.GetBitrate()
-	if err != errorUniInitialized {
+	if err != errorUnInitialized {
 		t.Errorf("SetBitrate Expected \"uninitialized error\" error: %v", err)
 	}
 
 	err = enc.SetComplexity(10)
-	if err != errorUniInitialized {
+	if err != errorUnInitialized {
 		t.Errorf("SetComplexity Expected \"uninitialized error\" error: %v", err)
 	}
 
 	_, err = enc.GetComplexity()
-	if err != errorUniInitialized {
+	if err != errorUnInitialized {
 		t.Errorf("GetComplexity Expected \"uninitialized error\" error: %v", err)
 	}
 
 	err = enc.SetSignal(SignalAuto)
-	if err != errorUniInitialized {
+	if err != errorUnInitialized {
 		t.Errorf("SetSignal Expected \"uninitialized error\" error: %v", err)
 	}
 
 	_, err = enc.GetSignal()
-	if err != errorUniInitialized {
+	if err != errorUnInitialized {
 		t.Errorf("GetSignal Expected \"uninitialized error\" error: %v", err)
 	}
 
 	err = enc.SetInBandFEC(true)
-	if err != errorUniInitialized {
+	if err != errorUnInitialized {
 		t.Errorf("SetInBandFEC Expected \"uninitialized error\" error: %v", err)
 	}
 
 	_, err = enc.GetInBandFEC()
-	if err != errorUniInitialized {
+	if err != errorUnInitialized {
 		t.Errorf("GetInBandFEC Expected \"uninitialized error\" error: %v", err)
 	}
 
 	err = enc.SetPacketLossPercentage(30)
-	if err != errorUniInitialized {
+	if err != errorUnInitialized {
 		t.Errorf("SetPacketLossPercentage Expected \"uninitialized error\" error: %v", err)
 	}
 
 	_, err = enc.GetPacketLossPercentage()
-	if err != errorUniInitialized {
+	if err != errorUnInitialized {
 		t.Errorf("GetPacketLossPercentage Expected \"uninitialized error\" error: %v", err)
 	}
 }
