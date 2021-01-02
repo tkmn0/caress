@@ -8,22 +8,19 @@ import (
 	"github.com/tkmn0/caress"
 )
 
-var noiseReducers []*caress.NoiseReducer
-var encoders []*caress.Encoder
-var decorders []*caress.Decoder
-
-//export Initialize
-func Initialize() {
-	noiseReducers = []*caress.NoiseReducer{}
-	encoders = []*caress.Encoder{}
-	decorders = []*caress.Decoder{}
-}
+var noiseReducers map[unsafe.Pointer]*caress.NoiseReducer
+var encoders map[unsafe.Pointer]*caress.Encoder
+var decoders map[unsafe.Pointer]*caress.Decoder
 
 //export CreateNoiseReducer
-func CreateNoiseReducer(config unsafe.Pointer) {
+func CreateNoiseReducer(config unsafe.Pointer, result unsafe.Pointer) {
 	c := (*NoiseReducerConfig)(config)
+	r := (*PointerResult)(result)
 	nr := caress.NewNoiseReducer(int(c.NumChannels), uint32(c.SampleRate), c.Attenuation, caress.RnnoiseModel(c.Model.StringValue()))
-	noiseReducers = append(noiseReducers, nr)
+	ptr := unsafe.Pointer(nr)
+	noiseReducers[ptr] = nr
+	r.Ptr = ptr
+	r.ApiError = *CreateApiError(nil)
 }
 
 //export CreateEncoder
@@ -33,8 +30,9 @@ func CreateEncoder(config unsafe.Pointer, result unsafe.Pointer) {
 	e, err := caress.NewEncoder(c.SampleRate, c.Channels, c.Application)
 	r.ApiError = *CreateApiError(err)
 	if e != nil {
-		encoders = append(encoders, e)
-		r.Ptr = unsafe.Pointer(e)
+		ptr := unsafe.Pointer(e)
+		encoders[ptr] = e
+		r.Ptr = ptr
 	}
 }
 
@@ -45,8 +43,9 @@ func CreateDecoder(config unsafe.Pointer, result unsafe.Pointer) {
 	d, err := caress.NewDecoder(c.SampleRate, c.Channels)
 	r.ApiError = *CreateApiError(err)
 	if d != nil {
-		decorders = append(decorders, d)
-		r.Ptr = unsafe.Pointer(d)
+		ptr := unsafe.Pointer(d)
+		decoders[ptr] = d
+		r.Ptr = ptr
 	}
 }
 
@@ -57,8 +56,8 @@ func Encode(ep unsafe.Pointer, input unsafe.Pointer, result unsafe.Pointer) {
 	e := (*caress.Encoder)(ep)
 	var pcm []int16
 	var buffer []byte
-	DataToSlice(*i, unsafe.Pointer(&pcm))
-	DataToSlice(r.ResultData, unsafe.Pointer(&buffer))
+	dataToSlice(*i, unsafe.Pointer(&pcm))
+	dataToSlice(r.ResultData, unsafe.Pointer(&buffer))
 	l, err := e.Encode(pcm, buffer)
 	r.ApiError = *CreateApiError(err)
 	r.ResultData.Length = uint32(l)
@@ -71,8 +70,8 @@ func EncodeFloat(ep unsafe.Pointer, input unsafe.Pointer, result unsafe.Pointer)
 	e := (*caress.Encoder)(ep)
 	var pcm []float32
 	var buffer []byte
-	DataToSlice(*i, unsafe.Pointer(&pcm))
-	DataToSlice(r.ResultData, unsafe.Pointer(&buffer))
+	dataToSlice(*i, unsafe.Pointer(&pcm))
+	dataToSlice(r.ResultData, unsafe.Pointer(&buffer))
 	l, err := e.EncodeFloat(pcm, buffer)
 	r.ApiError = *CreateApiError(err)
 	r.ResultData.Length = uint32(l)
@@ -85,8 +84,8 @@ func Decode(dp unsafe.Pointer, fec bool, input unsafe.Pointer, result unsafe.Poi
 	d := (*caress.Decoder)(dp)
 	var buffer []byte
 	var pcm []int16
-	DataToSlice(*i, unsafe.Pointer(&buffer))
-	DataToSlice(r.ResultData, unsafe.Pointer(&pcm))
+	dataToSlice(*i, unsafe.Pointer(&buffer))
+	dataToSlice(r.ResultData, unsafe.Pointer(&pcm))
 	l, err := d.Decode(buffer, pcm, fec)
 	r.ApiError = *CreateApiError(err)
 	r.ResultData.Length = uint32(l)
@@ -99,18 +98,39 @@ func DecodeFloat(dp unsafe.Pointer, fec bool, input unsafe.Pointer, result unsaf
 	d := (*caress.Decoder)(dp)
 	var buffer []byte
 	var pcm []float32
-	DataToSlice(*i, unsafe.Pointer(&buffer))
-	DataToSlice(r.ResultData, unsafe.Pointer(&pcm))
+	dataToSlice(*i, unsafe.Pointer(&buffer))
+	dataToSlice(r.ResultData, unsafe.Pointer(&pcm))
 	l, err := d.DecodeFloat(buffer, pcm, fec)
 	r.ApiError = *CreateApiError(err)
 	r.ResultData.Length = uint32(l)
 }
 
-func DataToSlice(source Data, dist unsafe.Pointer) {
+func dataToSlice(source Data, dist unsafe.Pointer) {
 	slice := (*reflect.SliceHeader)(dist)
 	slice.Len = int(source.Length)
 	slice.Cap = int(source.Length)
 	slice.Data = uintptr(source.Ptr)
+}
+
+//export DestroyNoiseReducer
+func DestroyNoiseReducer(rp unsafe.Pointer) {
+	delete(noiseReducers, rp)
+}
+
+//export DestroyEncoder
+func DestroyEncoder(ep unsafe.Pointer) {
+	delete(encoders, ep)
+}
+
+//export DestroyDecoder
+func DestroyDecoder(dp unsafe.Pointer) {
+	delete(decoders, dp)
+}
+
+func init() {
+	noiseReducers = map[unsafe.Pointer]*caress.NoiseReducer{}
+	encoders = map[unsafe.Pointer]*caress.Encoder{}
+	decoders = map[unsafe.Pointer]*caress.Decoder{}
 }
 
 func main() {}
