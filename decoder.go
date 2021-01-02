@@ -25,7 +25,7 @@ func NewDecoder(sampleRate uint32, channels uint16) (*Decoder, error) {
 
 func (d *Decoder) Decode(buffer []byte, pcm []int16, fec bool) (int, error) {
 	if d.decoder == nil {
-		return 0, errorUniInitialized
+		return 0, errorUnInitialized
 	}
 	if len(buffer) == 0 {
 		return 0, errorNoDataSupplied
@@ -51,7 +51,7 @@ func (d *Decoder) Decode(buffer []byte, pcm []int16, fec bool) (int, error) {
 
 func (d *Decoder) DecodeFloat(buffer []byte, pcm []float32, fec bool) (int, error) {
 	if d.decoder == nil {
-		return 0, errorUniInitialized
+		return 0, errorUnInitialized
 	}
 	if len(buffer) == 0 {
 		return 0, errorNoDataSupplied

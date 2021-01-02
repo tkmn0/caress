@@ -16,12 +16,12 @@ func TestDecoderInit(t *testing.T) {
 func TestDecoderUnitialized(t *testing.T) {
 	var dec Decoder
 	_, err := dec.Decode(nil, nil, false)
-	if err != errorUniInitialized {
+	if err != errorUnInitialized {
 		t.Errorf("decode Expected \"uninitialized error\" error: %v", err)
 	}
 
 	_, err = dec.DecodeFloat(nil, nil, false)
-	if err != errorUniInitialized {
+	if err != errorUnInitialized {
 		t.Errorf("DecodeFloat Expected \"uninitialized error\" error: %v", err)
 	}
 }

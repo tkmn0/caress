@@ -25,7 +25,7 @@ func NewEncoder(sampleRate uint32, channels uint16, application int32) (*Encoder
 
 func (e *Encoder) Encode(pcm []int16, buffer []byte) (int, error) {
 	if e.encoder == nil {
-		return 0, errorUniInitialized
+		return 0, errorUnInitialized
 	}
 	if len(pcm) == 0 {
 		return 0, errorNoDataSupplied
@@ -52,7 +52,7 @@ func (e *Encoder) Encode(pcm []int16, buffer []byte) (int, error) {
 
 func (e *Encoder) EncodeFloat(pcm []float32, buffer []byte) (int, error) {
 	if e.encoder == nil {
-		return 0, errorUniInitialized
+		return 0, errorUnInitialized
 	}
 	if len(pcm) == 0 {
 		return 0, errorNoDataSupplied
@@ -79,7 +79,7 @@ func (e *Encoder) EncodeFloat(pcm []float32, buffer []byte) (int, error) {
 
 func (e *Encoder) Setbitrate(bitrate int32) error {
 	if e.encoder == nil {
-		return errorUniInitialized
+		return errorUnInitialized
 	}
 
 	if bitrate > opus.MaxBitrate {
@@ -99,7 +99,7 @@ func (e *Encoder) Setbitrate(bitrate int32) error {
 
 func (e *Encoder) GetBitrate() (int32, error) {
 	if e.encoder == nil {
-		return 0, errorUniInitialized
+		return 0, errorUnInitialized
 	}
 	result, bitrate := opus.EncoderGetBitrate(e.encoder)
 	if result != opus.Ok {
@@ -112,7 +112,7 @@ func (e *Encoder) GetBitrate() (int32, error) {
 // complexity value range is 0 to 10
 func (e *Encoder) SetComplexity(complexity int32) error {
 	if e.encoder == nil {
-		return errorUniInitialized
+		return errorUnInitialized
 	}
 	if complexity > opus.MaxComplexity {
 		return errorSetComplexityInvalidSize
@@ -129,7 +129,7 @@ func (e *Encoder) SetComplexity(complexity int32) error {
 
 func (e *Encoder) GetComplexity() (int32, error) {
 	if e.encoder == nil {
-		return 0, errorUniInitialized
+		return 0, errorUnInitialized
 	}
 	result, complexity := opus.EncoderGetComplexity(e.encoder)
 	if result != opus.Ok {
@@ -140,7 +140,7 @@ func (e *Encoder) GetComplexity() (int32, error) {
 
 func (e *Encoder) SetSignal(signal int32) error {
 	if e.encoder == nil {
-		return errorUniInitialized
+		return errorUnInitialized
 	}
 	if signal != opus.SignalAuto && signal != opus.SignalMusic && signal != opus.SignalVoice {
 		return errorSetSignalInvalidValue
@@ -154,7 +154,7 @@ func (e *Encoder) SetSignal(signal int32) error {
 
 func (e *Encoder) GetSignal() (int32, error) {
 	if e.encoder == nil {
-		return 0, errorUniInitialized
+		return 0, errorUnInitialized
 	}
 	result, signal := opus.EncoderGetSignal(e.encoder)
 	if result != opus.Ok {
@@ -168,7 +168,7 @@ func (e *Encoder) GetSignal() (int32, error) {
 // default value is false
 func (e *Encoder) SetInBandFEC(enable bool) error {
 	if e.encoder == nil {
-		return errorUniInitialized
+		return errorUnInitialized
 	}
 	result := opus.EncoderSetInBandFEC(e.encoder, enable)
 	if result != opus.Ok {
@@ -179,7 +179,7 @@ func (e *Encoder) SetInBandFEC(enable bool) error {
 
 func (e *Encoder) GetInBandFEC() (bool, error) {
 	if e.encoder == nil {
-		return false, errorUniInitialized
+		return false, errorUnInitialized
 	}
 	result, enabled := opus.EncoderGetInBandFEC(e.encoder)
 	if result != opus.Ok {
@@ -192,7 +192,7 @@ func (e *Encoder) GetInBandFEC() (bool, error) {
 // percentage range is 0 to 100
 func (e *Encoder) SetPacketLossPercentage(perc int32) error {
 	if e.encoder == nil {
-		return errorUniInitialized
+		return errorUnInitialized
 	}
 	if perc > 100 || perc < 0 {
 		return errorSetPacketLossPercInvalidValue
@@ -206,7 +206,7 @@ func (e *Encoder) SetPacketLossPercentage(perc int32) error {
 
 func (e *Encoder) GetPacketLossPercentage() (int32, error) {
 	if e.encoder == nil {
-		return 0, errorUniInitialized
+		return 0, errorUnInitialized
 	}
 	result, perc := opus.EncoderGetPacketLossPerc(e.encoder)
 	if result != opus.Ok {

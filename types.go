@@ -18,7 +18,7 @@ const (
 
 var (
 	errorInitialize                    = errors.New("initialize error")
-	errorUniInitialized                = errors.New("uninitialized error")
+	errorUnInitialized                 = errors.New("uninitialized error")
 	errorNoDataSupplied                = errors.New("no data supplied error")
 	errorNoTargetbuffer                = errors.New("no target buffer error")
 	errorSuppliedDataSize              = errors.New("input buffer length must be multiple of channels")
