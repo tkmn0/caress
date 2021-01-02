@@ -44,11 +44,11 @@ var (
 type RnnoiseModel string
 
 const (
-	General          = RnnoiseModel("mp")
-	GeneralRecording = RnnoiseModel("cb")
-	Voice            = RnnoiseModel("lq")
-	VoiceRecording   = RnnoiseModel("bd")
-	Speech           = RnnoiseModel("orig")
-	SpeechRecording  = RnnoiseModel("sh")
-	None             = "none"
+	RnnoiseModelGeneral          = RnnoiseModel("mp")
+	RnnoiseModelGeneralRecording = RnnoiseModel("cb")
+	RnnoiseModelVoice            = RnnoiseModel("lq")
+	RnnoiseModelVoiceRecording   = RnnoiseModel("bd")
+	RnnoiseModelSpeech           = RnnoiseModel("orig")
+	RnnoiseModelSpeechRecording  = RnnoiseModel("sh")
+	RnnoiseModelNone             = "none"
 )

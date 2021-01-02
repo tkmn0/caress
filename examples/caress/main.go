@@ -87,7 +87,7 @@ func reduceNoise(samples []wav.Sample, numChannels uint16, sampleRate uint32, bi
 	}()
 
 	writer := wav.NewWriter(outfile, uint32(len(samples)), numChannels, sampleRate, bitsPerSample)
-	rnn := caress.NewNoiseReducer(int(numChannels), sampleRate, 20, caress.Voice)
+	rnn := caress.NewNoiseReducer(int(numChannels), sampleRate, 20, caress.RnnoiseModelVoice)
 	defer rnn.Destroy()
 
 	allResampled := []wav.Sample{}

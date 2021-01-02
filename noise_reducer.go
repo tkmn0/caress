@@ -52,7 +52,7 @@ func NewNoiseReducer(numChannels int, sampleRate uint32, attenuationDB float64, 
 	states := []*C.DenoiseState{}
 	var state *C.DenoiseState
 	for i := 0; i < numChannels; i++ {
-		if model == None {
+		if model == RnnoiseModelNone {
 			state = C.create_rnnoise()
 		} else {
 			state = C.create_rnnoise_with(C.CString(string(model)))
