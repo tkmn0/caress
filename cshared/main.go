@@ -20,15 +20,17 @@ func Initialize() {
 }
 
 //export CreateNoiseReducer
-func CreateNoiseReducer(numChannels int32, sampleRate int32, attenuation float64, model string) {
-	nr := caress.NewNoiseReducer(int(numChannels), uint32(sampleRate), attenuation, caress.RnnoiseModel(model))
+func CreateNoiseReducer(config unsafe.Pointer) {
+	c := (*NoiseReducerConfig)(config)
+	nr := caress.NewNoiseReducer(int(c.NumChannels), uint32(c.SampleRate), c.Attenuation, caress.RnnoiseModel(c.Model.StringValue()))
 	noiseReducers = append(noiseReducers, nr)
 }
 
 //export CreateEncoder
-func CreateEncoder(sampleRate uint32, channels uint16, application int32, result unsafe.Pointer) {
+func CreateEncoder(config unsafe.Pointer, result unsafe.Pointer) {
+	c := (*EncoderConfig)(config)
 	r := (*PointerResult)(result)
-	e, err := caress.NewEncoder(sampleRate, channels, application)
+	e, err := caress.NewEncoder(c.SampleRate, c.Channels, c.Application)
 	r.ApiError = *CreateApiError(err)
 	if e != nil {
 		encoders = append(encoders, e)
@@ -37,9 +39,10 @@ func CreateEncoder(sampleRate uint32, channels uint16, application int32, result
 }
 
 //export CreateDecoder
-func CreateDecoder(sampleRate uint32, channels uint16, result unsafe.Pointer) {
+func CreateDecoder(config unsafe.Pointer, result unsafe.Pointer) {
+	c := (*DecoderConfig)(config)
 	r := (*PointerResult)(result)
-	d, err := caress.NewDecoder(sampleRate, channels)
+	d, err := caress.NewDecoder(c.SampleRate, c.Channels)
 	r.ApiError = *CreateApiError(err)
 	if d != nil {
 		decorders = append(decorders, d)
@@ -49,61 +52,61 @@ func CreateDecoder(sampleRate uint32, channels uint16, result unsafe.Pointer) {
 
 //export Encode
 func Encode(ep unsafe.Pointer, input unsafe.Pointer, result unsafe.Pointer) {
-	i := (*Array)(input)
-	r := (*ArrayResult)(result)
+	i := (*Data)(input)
+	r := (*DataResult)(result)
 	e := (*caress.Encoder)(ep)
 	var pcm []int16
 	var buffer []byte
-	arrayToSlice(*i, unsafe.Pointer(&pcm))
-	arrayToSlice(r.ResultArray, unsafe.Pointer(&buffer))
+	DataToSlice(*i, unsafe.Pointer(&pcm))
+	DataToSlice(r.ResultData, unsafe.Pointer(&buffer))
 	l, err := e.Encode(pcm, buffer)
 	r.ApiError = *CreateApiError(err)
-	r.ResultArray.Length = uint32(l)
+	r.ResultData.Length = uint32(l)
 }
 
 //export EncodeFloat
 func EncodeFloat(ep unsafe.Pointer, input unsafe.Pointer, result unsafe.Pointer) {
-	i := (*Array)(input)
-	r := (*ArrayResult)(result)
+	i := (*Data)(input)
+	r := (*DataResult)(result)
 	e := (*caress.Encoder)(ep)
 	var pcm []float32
 	var buffer []byte
-	arrayToSlice(*i, unsafe.Pointer(&pcm))
-	arrayToSlice(r.ResultArray, unsafe.Pointer(&buffer))
+	DataToSlice(*i, unsafe.Pointer(&pcm))
+	DataToSlice(r.ResultData, unsafe.Pointer(&buffer))
 	l, err := e.EncodeFloat(pcm, buffer)
 	r.ApiError = *CreateApiError(err)
-	r.ResultArray.Length = uint32(l)
+	r.ResultData.Length = uint32(l)
 }
 
 //export Decode
 func Decode(dp unsafe.Pointer, fec bool, input unsafe.Pointer, result unsafe.Pointer) {
-	i := (*Array)(input)
-	r := (*ArrayResult)(result)
+	i := (*Data)(input)
+	r := (*DataResult)(result)
 	d := (*caress.Decoder)(dp)
 	var buffer []byte
 	var pcm []int16
-	arrayToSlice(*i, unsafe.Pointer(&buffer))
-	arrayToSlice(r.ResultArray, unsafe.Pointer(&pcm))
+	DataToSlice(*i, unsafe.Pointer(&buffer))
+	DataToSlice(r.ResultData, unsafe.Pointer(&pcm))
 	l, err := d.Decode(buffer, pcm, fec)
 	r.ApiError = *CreateApiError(err)
-	r.ResultArray.Length = uint32(l)
+	r.ResultData.Length = uint32(l)
 }
 
 //export DecodeFloat
 func DecodeFloat(dp unsafe.Pointer, fec bool, input unsafe.Pointer, result unsafe.Pointer) {
-	i := (*Array)(input)
-	r := (*ArrayResult)(result)
+	i := (*Data)(input)
+	r := (*DataResult)(result)
 	d := (*caress.Decoder)(dp)
 	var buffer []byte
 	var pcm []float32
-	arrayToSlice(*i, unsafe.Pointer(&buffer))
-	arrayToSlice(r.ResultArray, unsafe.Pointer(&pcm))
+	DataToSlice(*i, unsafe.Pointer(&buffer))
+	DataToSlice(r.ResultData, unsafe.Pointer(&pcm))
 	l, err := d.DecodeFloat(buffer, pcm, fec)
 	r.ApiError = *CreateApiError(err)
-	r.ResultArray.Length = uint32(l)
+	r.ResultData.Length = uint32(l)
 }
 
-func arrayToSlice(source Array, dist unsafe.Pointer) {
+func DataToSlice(source Data, dist unsafe.Pointer) {
 	slice := (*reflect.SliceHeader)(dist)
 	slice.Len = int(source.Length)
 	slice.Cap = int(source.Length)
