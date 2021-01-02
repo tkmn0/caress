@@ -26,7 +26,7 @@ const (
 	errorGetInBandFEC
 	errorSetPacketLossPerc
 	errorSetPacketLossPercInvalidValue
-	errorGetPacketLossPerce
+	errorGetPacketLossPerc
 	errorUnDefined
 )
 
