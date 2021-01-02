@@ -25,23 +25,31 @@ func CreateNoiseReducer(numChannels int32, sampleRate int32, attenuation float64
 }
 
 //export CreateEncoder
-func CreateEncoder(sampleRate uint32, channels uint16, application int32) unsafe.Pointer {
+func CreateEncoder(sampleRate uint32, channels uint16, application int32, result unsafe.Pointer) {
+	r := (*PointerResult)(result)
 	e, err := caress.NewEncoder(sampleRate, channels, application)
 	if err != nil {
-		return nil
+		apiError := CreateApiError(FromErrorToErrorCode(err), err)
+		r.Ptr = nil
+		r.ApiError = *apiError
 	}
 	encoders = append(encoders, e)
-	return unsafe.Pointer(e)
+	r.Ptr = unsafe.Pointer(e)
+	r.ApiError.Code = byte(caressOk)
 }
 
 //export CreateDecoder
-func CreateDecoder(sampleRate uint32, channels uint16) unsafe.Pointer {
+func CreateDecoder(sampleRate uint32, channels uint16, result unsafe.Pointer) {
+	r := (*PointerResult)(result)
 	d, err := caress.NewDecoder(sampleRate, channels)
 	if err != nil {
-		return nil
+		apiError := CreateApiError(FromErrorToErrorCode(err), err)
+		r.Ptr = nil
+		r.ApiError = *apiError
 	}
 	decorders = append(decorders, d)
-	return unsafe.Pointer(d)
+	r.Ptr = unsafe.Pointer(d)
+	r.ApiError.Code = byte(caressOk)
 }
 
 func main() {}

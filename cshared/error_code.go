@@ -5,7 +5,8 @@ import "github.com/tkmn0/caress"
 type CaressErrorCode byte
 
 const (
-	errorInitialize CaressErrorCode = iota + 1
+	caressOk CaressErrorCode = iota + 1
+	errorInitialize
 	errorUnInitialized
 	errorNoDataSupplied
 	errorNoTargetBuffer
