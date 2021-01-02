@@ -61,6 +61,20 @@ func Encode(ep unsafe.Pointer, input unsafe.Pointer, result unsafe.Pointer) {
 	r.ResultArray.Length = uint32(l)
 }
 
+//export EncodeFloat
+func EncodeFloat(ep unsafe.Pointer, input unsafe.Pointer, result unsafe.Pointer) {
+	i := (*Array)(input)
+	r := (*ArrayResult)(result)
+	e := (*caress.Encoder)(ep)
+	var pcm []float32
+	var buffer []byte
+	arrayToSlice(*i, unsafe.Pointer(&pcm))
+	arrayToSlice(r.ResultArray, unsafe.Pointer(&buffer))
+	l, err := e.EncodeFloat(pcm, buffer)
+	r.ApiError = *CreateApiError(err)
+	r.ResultArray.Length = uint32(l)
+}
+
 //export Decode
 func Decode(dp unsafe.Pointer, fec bool, input unsafe.Pointer, result unsafe.Pointer) {
 	i := (*Array)(input)
@@ -71,6 +85,20 @@ func Decode(dp unsafe.Pointer, fec bool, input unsafe.Pointer, result unsafe.Poi
 	arrayToSlice(*i, unsafe.Pointer(&buffer))
 	arrayToSlice(r.ResultArray, unsafe.Pointer(&pcm))
 	l, err := d.Decode(buffer, pcm, fec)
+	r.ApiError = *CreateApiError(err)
+	r.ResultArray.Length = uint32(l)
+}
+
+//export DecodeFloat
+func DecodeFloat(dp unsafe.Pointer, fec bool, input unsafe.Pointer, result unsafe.Pointer) {
+	i := (*Array)(input)
+	r := (*ArrayResult)(result)
+	d := (*caress.Decoder)(dp)
+	var buffer []byte
+	var pcm []float32
+	arrayToSlice(*i, unsafe.Pointer(&buffer))
+	arrayToSlice(r.ResultArray, unsafe.Pointer(&pcm))
+	l, err := d.DecodeFloat(buffer, pcm, fec)
 	r.ApiError = *CreateApiError(err)
 	r.ResultArray.Length = uint32(l)
 }
