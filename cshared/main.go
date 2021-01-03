@@ -16,7 +16,7 @@ var decoders map[unsafe.Pointer]*caress.Decoder
 func CreateNoiseReducer(config unsafe.Pointer, result unsafe.Pointer) {
 	c := (*NoiseReducerConfig)(config)
 	r := (*PointerResult)(result)
-	nr := caress.NewNoiseReducer(int(c.NumChannels), uint32(c.SampleRate), c.Attenuation, caress.RnnoiseModel(c.Model.StringValue()))
+	nr := caress.NewNoiseReducer(int(c.NumChannels), uint32(c.SampleRate), c.Attenuation, GetRnnoiseModelName(RnnoiseModelCode(c.Model)))
 	ptr := unsafe.Pointer(nr)
 	noiseReducers[ptr] = nr
 	r.Ptr = ptr
@@ -61,7 +61,7 @@ func ReduceNoise(
 	rn.ProcessFrame(p, int(channel))
 }
 
-//export ReduceNoise
+//export ReduceNoiseFloat
 func ReduceNoiseFloat(
 	ptr unsafe.Pointer,
 	pcm unsafe.Pointer,
