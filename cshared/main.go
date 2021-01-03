@@ -151,10 +151,26 @@ func DecodeFloat(
 	r.ApiError = *CreateApiError(err)
 }
 
+//export SetMaxAttenuation
+func SetMaxAttenuation(ptr unsafe.Pointer, maxAttenuationDB float64) {
+	rn := (*caress.NoiseReducer)(ptr)
+	rn.SetAttenuationDB(maxAttenuationDB)
+}
+
+//export ChangeRnnModel
+func ChangeRnnModel(ptr unsafe.Pointer, modelCode byte) {
+	rn := (*caress.NoiseReducer)(ptr)
+	rn.ChangeRnnModel(GetRnnoiseModelName(RnnoiseModelCode(modelCode)))
+}
+
 //export DestroyNoiseReducer
 func DestroyNoiseReducer(ptr unsafe.Pointer) {
-	delete(noiseReducers, ptr)
-	ptr = nil
+	d := (*Data)(ptr)
+	rn := (*caress.NoiseReducer)(d.Ptr)
+	rn.Destroy()
+	delete(noiseReducers, d.Ptr)
+	rn = nil
+	d.Ptr = nil
 }
 
 //export DestroyEncoder
