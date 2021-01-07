@@ -168,6 +168,25 @@ func EncoderGetSignal(ptr unsafe.Pointer, result unsafe.Pointer) {
 	r.ApiError = *CreateApiError(err)
 }
 
+//export EncoderSetInBandFEC
+func EncoderSetInBandFEC(ptr unsafe.Pointer, enable bool, result unsafe.Pointer) {
+	e := (*caress.Encoder)(ptr)
+	r := (*ApiError)(result)
+	err := e.SetInBandFEC(enable)
+	apiErr := CreateApiError(err)
+	r.Code = apiErr.Code
+	r.Data = apiErr.Data
+}
+
+//export EncoderGetInBandFEC
+func EncoderGetInBandFEC(ptr unsafe.Pointer, result unsafe.Pointer) {
+	e := (*caress.Encoder)(ptr)
+	r := (*BoolResult)(result)
+	enabled, err := e.GetInBandFEC()
+	r.Value = enabled
+	r.ApiError = *CreateApiError(err)
+}
+
 //export Decode
 func Decode(
 	ptr unsafe.Pointer,
