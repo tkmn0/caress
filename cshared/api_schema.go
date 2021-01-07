@@ -30,8 +30,8 @@ type PointerResult struct {
 	ApiError ApiError
 }
 
-type EncodeDecodeResult struct {
-	Length   int32
+type IntResult struct {
+	Value    int32
 	ApiError ApiError
 }
 

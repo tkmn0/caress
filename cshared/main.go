@@ -81,14 +81,14 @@ func Encode(
 	buffer unsafe.Pointer,
 	bufferLen int32,
 	result unsafe.Pointer) {
-	r := (*EncodeDecodeResult)(result)
+	r := (*IntResult)(result)
 	e := (*caress.Encoder)(ptr)
 	var p []int16
 	var b []byte
 	pointerToSlice(pcm, pcmLen, unsafe.Pointer(&p))
 	pointerToSlice(buffer, bufferLen, unsafe.Pointer(&b))
 	l, err := e.Encode(p, b)
-	r.Length = int32(l)
+	r.Value = int32(l)
 	r.ApiError = *CreateApiError(err)
 }
 
@@ -100,14 +100,33 @@ func EncodeFloat(
 	buffer unsafe.Pointer,
 	bufferLen int32,
 	result unsafe.Pointer) {
-	r := (*EncodeDecodeResult)(result)
+	r := (*IntResult)(result)
 	e := (*caress.Encoder)(ptr)
 	var p []float32
 	var b []byte
 	pointerToSlice(pcm, pcmLen, unsafe.Pointer(&p))
 	pointerToSlice(buffer, bufferLen, unsafe.Pointer(&b))
 	l, err := e.EncodeFloat(p, b)
-	r.Length = int32(l)
+	r.Value = int32(l)
+	r.ApiError = *CreateApiError(err)
+}
+
+//export EncoderSetBitrate
+func EncoderSetBitrate(ptr unsafe.Pointer, br int32, result unsafe.Pointer) {
+	e := (*caress.Encoder)(ptr)
+	r := (*ApiError)(result)
+	err := e.Setbitrate(br)
+	apiErr := CreateApiError(err)
+	r.Code = apiErr.Code
+	r.Data = apiErr.Data
+}
+
+//export EncoderGetBitrate
+func EncoderGetBitrate(ptr unsafe.Pointer, result unsafe.Pointer) {
+	e := (*caress.Encoder)(ptr)
+	r := (*IntResult)(result)
+	br, err := e.GetBitrate()
+	r.Value = br
 	r.ApiError = *CreateApiError(err)
 }
 
@@ -120,14 +139,14 @@ func Decode(
 	pcm unsafe.Pointer,
 	pcmLen int32,
 	result unsafe.Pointer) {
-	r := (*EncodeDecodeResult)(result)
+	r := (*IntResult)(result)
 	d := (*caress.Decoder)(ptr)
 	var b []byte
 	var p []int16
 	pointerToSlice(buffer, bufferLen, unsafe.Pointer(&b))
 	pointerToSlice(pcm, pcmLen, unsafe.Pointer(&p))
 	l, err := d.Decode(b, p, fec)
-	r.Length = int32(l)
+	r.Value = int32(l)
 	r.ApiError = *CreateApiError(err)
 }
 
@@ -140,14 +159,14 @@ func DecodeFloat(
 	pcm unsafe.Pointer,
 	pcmLen int32,
 	result unsafe.Pointer) {
-	r := (*EncodeDecodeResult)(result)
+	r := (*IntResult)(result)
 	d := (*caress.Decoder)(ptr)
 	var b []byte
 	var p []float32
 	pointerToSlice(buffer, bufferLen, unsafe.Pointer(&b))
 	pointerToSlice(pcm, pcmLen, unsafe.Pointer(&p))
 	l, err := d.DecodeFloat(b, p, fec)
-	r.Length = int32(l)
+	r.Value = int32(l)
 	r.ApiError = *CreateApiError(err)
 }
 
