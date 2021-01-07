@@ -130,6 +130,25 @@ func EncoderGetBitrate(ptr unsafe.Pointer, result unsafe.Pointer) {
 	r.ApiError = *CreateApiError(err)
 }
 
+//export EncoderSetComplexity
+func EncoderSetComplexity(ptr unsafe.Pointer, comp int32, result unsafe.Pointer) {
+	e := (*caress.Encoder)(ptr)
+	r := (*ApiError)(result)
+	err := e.SetComplexity(comp)
+	apiErr := CreateApiError(err)
+	r.Code = apiErr.Code
+	r.Data = apiErr.Data
+}
+
+//export EncoderGetComplexity
+func EncoderGetComplexity(ptr unsafe.Pointer, result unsafe.Pointer) {
+	e := (*caress.Encoder)(ptr)
+	r := (*IntResult)(result)
+	comp, err := e.GetComplexity()
+	r.Value = comp
+	r.ApiError = *CreateApiError(err)
+}
+
 //export Decode
 func Decode(
 	ptr unsafe.Pointer,
