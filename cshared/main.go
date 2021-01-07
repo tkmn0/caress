@@ -149,6 +149,25 @@ func EncoderGetComplexity(ptr unsafe.Pointer, result unsafe.Pointer) {
 	r.ApiError = *CreateApiError(err)
 }
 
+//export EncoderSetSignal
+func EncoderSetSignal(ptr unsafe.Pointer, signal int32, result unsafe.Pointer) {
+	e := (*caress.Encoder)(ptr)
+	r := (*ApiError)(result)
+	err := e.SetSignal(signal)
+	apiErr := CreateApiError(err)
+	r.Code = apiErr.Code
+	r.Data = apiErr.Data
+}
+
+//export EncoderGetSignal
+func EncoderGetSignal(ptr unsafe.Pointer, result unsafe.Pointer) {
+	e := (*caress.Encoder)(ptr)
+	r := (*IntResult)(result)
+	signal, err := e.GetSignal()
+	r.Value = signal
+	r.ApiError = *CreateApiError(err)
+}
+
 //export Decode
 func Decode(
 	ptr unsafe.Pointer,
