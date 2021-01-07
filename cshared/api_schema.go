@@ -35,6 +35,11 @@ type IntResult struct {
 	ApiError ApiError
 }
 
+type BoolResult struct {
+	Value    bool
+	ApiError ApiError
+}
+
 type NoiseReducerConfig struct {
 	NumChannels int32
 	SampleRate  int32
