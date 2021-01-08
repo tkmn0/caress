@@ -187,6 +187,25 @@ func EncoderGetInBandFEC(ptr unsafe.Pointer, result unsafe.Pointer) {
 	r.ApiError = *CreateApiError(err)
 }
 
+//export EncoderSetPacketLossPercentage
+func EncoderSetPacketLossPercentage(ptr unsafe.Pointer, percentage int32, result unsafe.Pointer) {
+	e := (*caress.Encoder)(ptr)
+	r := (*ApiError)(result)
+	err := e.SetPacketLossPercentage(percentage)
+	apiErr := CreateApiError(err)
+	r.Code = apiErr.Code
+	r.Data = apiErr.Data
+}
+
+//export EncoderGetPacketLossPercentage
+func EncoderGetPacketLossPercentage(ptr unsafe.Pointer, result unsafe.Pointer) {
+	e := (*caress.Encoder)(ptr)
+	r := (*IntResult)(result)
+	percentage, err := e.GetPacketLossPercentage()
+	r.Value = percentage
+	r.ApiError = *CreateApiError(err)
+}
+
 //export Decode
 func Decode(
 	ptr unsafe.Pointer,
