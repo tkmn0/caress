@@ -20,62 +20,62 @@ func TestEncoderInit(t *testing.T) {
 func TestEncoderUnitialized(t *testing.T) {
 	var enc Encoder
 	_, err := enc.Encode(nil, nil)
-	if err != errorUnInitialized {
+	if err != ErrorUnInitialized {
 		t.Errorf("Encode Expected \"uninitialized error\" error: %v", err)
 	}
 
 	_, err = enc.EncodeFloat(nil, nil)
-	if err != errorUnInitialized {
+	if err != ErrorUnInitialized {
 		t.Errorf("EncodeFloat Expected \"uninitialized error\" error: %v", err)
 	}
 
 	err = enc.Setbitrate(600)
-	if err != errorUnInitialized {
+	if err != ErrorUnInitialized {
 		t.Errorf("SetBitrate Expected \"uninitialized error\" error: %v", err)
 	}
 
 	_, err = enc.GetBitrate()
-	if err != errorUnInitialized {
+	if err != ErrorUnInitialized {
 		t.Errorf("SetBitrate Expected \"uninitialized error\" error: %v", err)
 	}
 
 	err = enc.SetComplexity(10)
-	if err != errorUnInitialized {
+	if err != ErrorUnInitialized {
 		t.Errorf("SetComplexity Expected \"uninitialized error\" error: %v", err)
 	}
 
 	_, err = enc.GetComplexity()
-	if err != errorUnInitialized {
+	if err != ErrorUnInitialized {
 		t.Errorf("GetComplexity Expected \"uninitialized error\" error: %v", err)
 	}
 
 	err = enc.SetSignal(SignalAuto)
-	if err != errorUnInitialized {
+	if err != ErrorUnInitialized {
 		t.Errorf("SetSignal Expected \"uninitialized error\" error: %v", err)
 	}
 
 	_, err = enc.GetSignal()
-	if err != errorUnInitialized {
+	if err != ErrorUnInitialized {
 		t.Errorf("GetSignal Expected \"uninitialized error\" error: %v", err)
 	}
 
 	err = enc.SetInBandFEC(true)
-	if err != errorUnInitialized {
+	if err != ErrorUnInitialized {
 		t.Errorf("SetInBandFEC Expected \"uninitialized error\" error: %v", err)
 	}
 
 	_, err = enc.GetInBandFEC()
-	if err != errorUnInitialized {
+	if err != ErrorUnInitialized {
 		t.Errorf("GetInBandFEC Expected \"uninitialized error\" error: %v", err)
 	}
 
 	err = enc.SetPacketLossPercentage(30)
-	if err != errorUnInitialized {
+	if err != ErrorUnInitialized {
 		t.Errorf("SetPacketLossPercentage Expected \"uninitialized error\" error: %v", err)
 	}
 
 	_, err = enc.GetPacketLossPercentage()
-	if err != errorUnInitialized {
+	if err != ErrorUnInitialized {
 		t.Errorf("GetPacketLossPercentage Expected \"uninitialized error\" error: %v", err)
 	}
 }
@@ -88,12 +88,12 @@ func TestNoDataSupplied(t *testing.T) {
 	buffer := make([]byte, 1024)
 
 	_, err = enc.Encode(nil, buffer)
-	if err != errorNoDataSupplied {
+	if err != ErrorNoDataSupplied {
 		t.Errorf("Expected \"no data supplied error\" error: %v", err)
 	}
 
 	_, err = enc.EncodeFloat(nil, buffer)
-	if err != errorNoDataSupplied {
+	if err != ErrorNoDataSupplied {
 		t.Errorf("Expected \"no data supplied error\" error: %v", err)
 	}
 }
@@ -106,13 +106,13 @@ func TestNoTargetBuffer(t *testing.T) {
 
 	pcmInt16 := make([]int16, 1024)
 	_, err = enc.Encode(pcmInt16, nil)
-	if err != errorNoTargetbuffer {
+	if err != ErrorNoTargetbuffer {
 		t.Errorf("Expected \"no target buffer error\" error: %v", err)
 	}
 
 	pcmFloat32 := make([]float32, 1024)
 	_, err = enc.EncodeFloat(pcmFloat32, nil)
-	if err != errorNoTargetbuffer {
+	if err != ErrorNoTargetbuffer {
 		t.Errorf("Expected \"no target buffer error\" error: %v", err)
 	}
 }
@@ -123,13 +123,13 @@ func TestInvalidPcmSizeEncode(t *testing.T) {
 	pcm := make([]int16, 255)
 	buffer := make([]byte, 256)
 	_, err := enc.Encode(pcm, buffer)
-	if err != errorSuppliedDataSize {
+	if err != ErrorSuppliedDataSize {
 		t.Errorf("Expected \"input buffer length must be multiple of channels\" error: %v", err)
 	}
 
 	pcmFloat := make([]float32, 255)
 	_, err = enc.EncodeFloat(pcmFloat, buffer)
-	if err != errorSuppliedDataSize {
+	if err != ErrorSuppliedDataSize {
 		t.Errorf("Expected \"input buffer length must be multiple of channels\" error: %v", err)
 	}
 }
@@ -141,7 +141,7 @@ func TestEncoderBitrate(t *testing.T) {
 	}
 	var targetBitrate int32 = 1000
 	err = enc.Setbitrate(targetBitrate)
-	if err != nil && err != errorSetBitrate {
+	if err != nil && err != ErrorSetBitrate {
 		t.Errorf("Expected \"set bitrate error\" error: %v", err)
 	}
 
@@ -161,13 +161,13 @@ func TestEncoderSetInvalidBitrate(t *testing.T) {
 	}
 
 	err = enc.Setbitrate(opus.MinBitrate - 100)
-	if err != errorSetBitrateInvalidSize {
-		t.Errorf("Expected %v error: %v", errorSetBitrateInvalidSize, err)
+	if err != ErrorSetBitrateInvalidSize {
+		t.Errorf("Expected %v error: %v", ErrorSetBitrateInvalidSize, err)
 	}
 
 	err = enc.Setbitrate(opus.MaxBitrate + 100)
-	if err != errorSetBitrateInvalidSize {
-		t.Errorf("Expected %v error: %v", errorSetBitrateInvalidSize, err)
+	if err != ErrorSetBitrateInvalidSize {
+		t.Errorf("Expected %v error: %v", ErrorSetBitrateInvalidSize, err)
 	}
 }
 
@@ -200,13 +200,13 @@ func TestEncoderSetInvalidComplexity(t *testing.T) {
 	}
 
 	err = enc.SetComplexity(opus.MaxComplexity + 1)
-	if err != errorSetComplexityInvalidSize {
-		t.Errorf("Expected %v error: %v", errorSetComplexityInvalidSize, err)
+	if err != ErrorSetComplexityInvalidSize {
+		t.Errorf("Expected %v error: %v", ErrorSetComplexityInvalidSize, err)
 	}
 
 	err = enc.SetComplexity(opus.MinComplexity - 1)
-	if err != errorSetComplexityInvalidSize {
-		t.Errorf("Expected %v error: %v", errorSetComplexityInvalidSize, err)
+	if err != ErrorSetComplexityInvalidSize {
+		t.Errorf("Expected %v error: %v", ErrorSetComplexityInvalidSize, err)
 	}
 }
 
@@ -238,8 +238,8 @@ func TestEncoderSetSignalInvalidValue(t *testing.T) {
 	}
 
 	err = enc.SetSignal(6000)
-	if err == nil || err != errorSetSignalInvalidValue {
-		t.Errorf("Expected error is %v, but error is %v", errorSetSignalInvalidValue, err)
+	if err == nil || err != ErrorSetSignalInvalidValue {
+		t.Errorf("Expected error is %v, but error is %v", ErrorSetSignalInvalidValue, err)
 	}
 }
 
@@ -289,12 +289,12 @@ func TestEncoderSetPakcetLossInvalidPercentage(t *testing.T) {
 	}
 
 	err = enc.SetPacketLossPercentage(120)
-	if err != errorSetPacketLossPercInvalidValue {
-		t.Errorf("Expected error is %v, but error is %v", errorSetPacketLossPercInvalidValue, err)
+	if err != ErrorSetPacketLossPercInvalidValue {
+		t.Errorf("Expected error is %v, but error is %v", ErrorSetPacketLossPercInvalidValue, err)
 	}
 
 	err = enc.SetPacketLossPercentage(-230)
-	if err != errorSetPacketLossPercInvalidValue {
-		t.Errorf("Expected error is %v, but error is %v", errorSetPacketLossPercInvalidValue, err)
+	if err != ErrorSetPacketLossPercInvalidValue {
+		t.Errorf("Expected error is %v, but error is %v", ErrorSetPacketLossPercInvalidValue, err)
 	}
 }
