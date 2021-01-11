@@ -1,6 +1,7 @@
 package opus
 
 /*
+#cgo pkg-config: opus
 #include "opus.h"
 #include <stdlib.h>
 

@@ -1,8 +1,7 @@
 package caress
 
 /*
-#cgo CFLAGS: -I/usr/local/include
-#cgo LDFLAGS: -L//usr/local/lib -lrnnoise-nu
+#cgo pkg-config: rnnoise-nu
 
 #include <stdio.h>
 #include <math.h>
