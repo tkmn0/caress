@@ -65,7 +65,7 @@ const (
 	MinBitrate    = 500
 	MaxComplexity = 10
 	MinComplexity = 0
-	SignalAuto    = 1000
+	SignalAuto    = -1000
 )
 
 // Maximum is 512000, minimum is 500

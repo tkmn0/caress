@@ -142,7 +142,7 @@ func (e *Encoder) SetSignal(signal int32) error {
 	if e.encoder == nil {
 		return ErrorUnInitialized
 	}
-	if signal != opus.SignalAuto && signal != opus.SignalMusic && signal != opus.SignalVoice {
+	if !(signal == opus.SignalAuto || signal == opus.SignalMusic || signal == opus.SignalVoice) {
 		return ErrorSetSignalInvalidValue
 	}
 	result := opus.EncoderSetSignal(e.encoder, signal)
