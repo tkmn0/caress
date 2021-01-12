@@ -11,7 +11,7 @@ const (
 	// ApplicationRestrictedLowdelay as defined in opus/opus_defines.h:199
 	ApplicationRestrictedLowdelay = 2051
 
-	SignalAuto  = -1000
+	SignalAuto  = 1000
 	SignalVoice = 3001
 	SignalMusic = 3002
 )
