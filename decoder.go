@@ -74,3 +74,10 @@ func (d *Decoder) DecodeFloat(buffer []byte, pcm []float32, fec bool) (int, erro
 	}
 	return int(n), nil
 }
+
+func (d *Decoder) Destroy() {
+	if d.decoder == nil {
+		return
+	}
+	opus.DecoderDestroy(d.decoder)
+}
