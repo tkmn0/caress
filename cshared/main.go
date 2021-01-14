@@ -270,8 +270,12 @@ func DestroyNoiseReducer(ptr unsafe.Pointer) {
 
 //export DestroyEncoder
 func DestroyEncoder(ptr unsafe.Pointer) {
-	delete(encoders, ptr)
-	ptr = nil
+	d := (*Data)(ptr)
+	enc := (*caress.Encoder)(d.Ptr)
+	enc.Destroy()
+	delete(encoders, d.Ptr)
+	enc = nil
+	d.Ptr = nil
 }
 
 //export DestroyDecoder

@@ -214,3 +214,10 @@ func (e *Encoder) GetPacketLossPercentage() (int32, error) {
 	}
 	return perc, nil
 }
+
+func (e *Encoder) Destroy() {
+	if e.encoder == nil {
+		return
+	}
+	opus.EncoderDestroy(e.encoder)
+}
