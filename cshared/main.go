@@ -280,8 +280,12 @@ func DestroyEncoder(ptr unsafe.Pointer) {
 
 //export DestroyDecoder
 func DestroyDecoder(ptr unsafe.Pointer) {
-	delete(decoders, ptr)
-	ptr = nil
+	d := (*Data)(ptr)
+	dec := (*caress.Decoder)(d.Ptr)
+	dec.Destroy()
+	delete(decoders, d.Ptr)
+	dec = nil
+	d.Ptr = nil
 }
 
 func pointerToSlice(source unsafe.Pointer, length int32, dist unsafe.Pointer) {
